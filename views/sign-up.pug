@@ -1,0 +1,29 @@
+extends layout 
+
+block content 
+	h2= title 
+
+	form(method='POST')
+		label(for='first') First Name: 
+		input#first(type='text' name='firstName' required value=firstName || '')
+
+		label(for='last') Last Name: 
+		input#last(type='text' name='lastName' required value=lastName || '')
+
+		label(for='username') Username: 
+		input#username(type='text' name='username' required value=username || '')
+
+		label(for='pass') Password: 
+		input#pass(type='password' name='pass' required)
+
+		label(for='confPass') Confirm Password: 
+		input#confPass(type='password' name='confPass' required)
+
+		button.submit(type='submit') Register
+
+
+	//- Errors in form
+	if errors
+		ul 
+			each err in errors
+				li.err= err.msg 

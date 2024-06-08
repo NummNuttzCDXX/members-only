@@ -1,8 +1,27 @@
+:root {
+  font-size: clamp(16px, 2vmin, 20px);
+}
+
 body {
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+form {
+  max-width: 50vw;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: .5rem;
+}
+
+/* Invalid form fields */
+.err {
+	color: #ae0000;
 }

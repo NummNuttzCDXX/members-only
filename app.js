@@ -1,12 +1,23 @@
+/* eslint-disable no-console */
+require('dotenv').config(); // Load environment vars
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const mongoose = require('mongoose');
 
 const indexRouter = require('./routes/index');
 
 const app = express();
+
+// Connect to DB w/ Mongoose
+async function connectDB(key) {
+	await mongoose.connect(key)
+		.then(() => console.log('DB Connected successfully'))
+		.catch((err) => console.log(err));
+}
+connectDB(process.env.MONGODB_URI);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
