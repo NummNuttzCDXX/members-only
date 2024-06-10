@@ -5,6 +5,7 @@ const User = require('../models/Users');
 const asyncHandler = require('express-async-handler');
 const {body, validationResult} = require('express-validator');
 const bcrypt = require('bcryptjs');
+const passport = require('passport');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -77,6 +78,58 @@ router.post('/sign-up', [
 
 		res.redirect('/'); // Redirect Homepage
 	}),
+]);
+
+// GET Login page
+router.get('/login', (req, res, next) => {
+	res.render('login', {
+		title: 'Login',
+	});
+});
+
+// POST Login - Authenticate user login credentials
+router.post('/login', [
+	// Sanitize/Validate username & password
+	body(['username', 'password'])
+		.trim()
+		.isLength({min: 5})
+		.withMessage('Inputs must have at least 5 characters')
+		.escape(),
+
+	// Authenticate User
+	(req, res, next) => {
+		// Extract form errors
+		const errors = validationResult(req);
+
+		if (!errors.isEmpty()) { // There are errors
+			// Re-Render form
+			return res.render('login', {
+				title: 'Login',
+				username: req.body.username,
+				errors: errors.array(),
+			});
+		}
+
+		// No errors - Authenticate User
+		passport.authenticate('local', (err, user, info) => {
+			if (err) return next(err); // Handle errors during authentication
+
+			if (!user) { // Authentication fails - incorrect username / password
+				return res.render('login', {
+					title: 'Login',
+					username: req.body.username,
+					errors: [{msg: info.message}],
+				});
+			}
+
+			// Authentication succeeds! - Login User
+			req.logIn(user, (err) => {
+				if (err) return next(err);
+				res.redirect('/'); // Redirect to homepage
+			});
+		})(req, res, next); /* `passport.authenticate(...)` returns a middleware
+		function that needs to be called - Hence `(req, res, next)` */
+	},
 ]);
 
 module.exports = router;
