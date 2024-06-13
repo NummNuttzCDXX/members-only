@@ -3,8 +3,45 @@
 }
 
 body {
-  padding: 50px;
+  padding: 0 50px;
   font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+
+	background-color: #15191e;
+	color: aliceblue;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+header {
+	width: 100%;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
+/* Header Link to index */
+h1 a {
+	color: inherit;
+	text-decoration: none;
+}
+
+nav {
+	display: flex;
+	gap: 1rem;
+}
+
+nav a {
+	padding: .3rem;
+
+	text-decoration: none;
+	border-radius: .5rem;
+}
+nav a:hover {
+	background-color: #3a506bcc;
 }
 
 a {
