@@ -1,5 +1,33 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  p Welcome to the #[span.accent-txt #{title} club!]
+  p.desc #[span.accent-txt Log in] to post a message 
+  p.desc Become a #[span.accent-txt member] to see Authors and dates
+
+  .msg-board-wrapper 
+    if user 
+      //- User is logged in
+      form.msg-form(method='POST')
+        label: input(type='text' name='title' placeholder='Title')
+        .send-msg 
+          label: input(type='text' name='message' placeholder='Post a Message!')
+          button(type='submit'): img.send-icon(src='/images/send_icon.svg' alt='send icon')
+
+    if errors 
+      ul 
+        each err in errors 
+          li.err= err.msg
+
+    .msg-board 
+      if messages.length 
+        each msg in messages 
+          .msg 
+            h3= msg.title
+              if user && user.member
+                span= msg.dateData.format + ' ago'
+            p= msg.body 
+            if user && user.member
+              p.author ~#{msg.author.name}
+      else 
+        p.msg No messages. Post a new message below! 
