@@ -2,15 +2,101 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/Users');
+const Messages = require('../models/Messages');
 const asyncHandler = require('express-async-handler');
 const {body, validationResult} = require('express-validator');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const {formatDistanceToNow} = require('date-fns');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-	res.render('index', {title: 'Express'});
-});
+router.get('/', asyncHandler(async (req, res, next) => {
+	const messages = await Messages.find()
+		.populate('author')
+		.sort({'dateData.date': -1}) // Sort dates in desc order
+		.exec();
+
+	// Only format dates if User is a Member
+	if (req.user && req.user.member) {
+		// Format all message dates
+		const updateProms = [];
+		messages.forEach((msg) => {
+			// Update each msg format data and push to array
+			updateProms.push(
+				msg.updateOne({$set: {dateData: {
+					date: msg.dateData.date,
+					format: formatDistanceToNow(msg.dateData.date),
+					lastFormatted: new Date(),
+				}}}),
+			);
+
+			/*
+			 * Format the msg in memory to avoid having to re-fetch from DB
+			 * to display the formatted dates
+			 *
+			 * Without this, the `messages` array would not have the updated dates
+			 */
+			msg.dateData.format = formatDistanceToNow(msg.dateData.date);
+		});
+
+		// Await all update Promises
+		await Promise.all(updateProms);
+	}
+
+	res.render('index', {
+		title: 'Members-Only',
+		messages: messages,
+		user: req.user,
+	});
+}));
+
+// POST Message to Board
+router.post('/', [
+	body(['title', 'message'])
+		.trim()
+		.isLength({min: 1})
+		.withMessage('Fields cannot be blank')
+		.escape(),
+
+	asyncHandler(async (req, res, next) => {
+		const errors = validationResult(req);
+
+		if (!errors.isEmpty()) {
+			const messages = await Messages.find()
+				.populate('author')
+				.sort({'dateData.date': -1})
+				.exec();
+
+			return res.render('index', {
+				title: 'Members-Only',
+				messages: messages,
+				user: req.user,
+				errors: errors.array(),
+			});
+		}
+
+		// No Errors! - Create message
+		const currentDate = new Date();
+		const msg = new Messages({
+			title: req.body.title,
+			body: req.body.message,
+			dateData: {
+				date: currentDate,
+				format: formatDistanceToNow(currentDate),
+				lastFormatted: new Date(),
+			},
+			author: req.user._id,
+		});
+
+		await msg.save();
+
+		// Add msg to user
+		await User.findByIdAndUpdate(req.user.id, {$push: {msgs: msg}});
+
+		// Re-Render page with new message
+		res.redirect('/');
+	}),
+]);
 
 // GET Sign-Up page
 router.get('/sign-up', (req, res, next) => {
