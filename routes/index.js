@@ -218,4 +218,60 @@ router.post('/login', [
 	},
 ]);
 
+
+// GET Become a Member page
+router.get('/become-member', (req, res, next) => {
+	res.render('become-member', {
+		title: 'Become a Member',
+		user: req.user,
+	});
+});
+
+// POST Become a Member
+router.post('/become-member', [
+	body('pass')
+		.trim()
+		.isLength({min: 1})
+		.withMessage('Password cannot be blank')
+		.escape(),
+
+	// Check pass
+	asyncHandler(async (req, res, next) => {
+		const errs = validationResult(req);
+		if (!errs.isEmpty()) {
+			return res.render('become-member', {
+				title: 'Become a Member',
+				user: req.user,
+				errors: errs.array(),
+			});
+		}
+
+		// No errors - Check password
+		const correctPass = process.env.MEMBER_PASS;
+		if (req.body.pass === correctPass) {
+			await User.findByIdAndUpdate(req.user.id, {member: true});
+
+			return res.render('become-member', {
+				title: 'Success!',
+				user: req.user,
+				success: true, // Flag signifies successful password attempt
+			});
+		}
+
+		// Incorrect Pass
+		return res.render('become-member', {
+			title: 'Become a Member',
+			user: req.user,
+			errors: [{msg: 'Incorrect Password'}],
+		});
+	}),
+]);
+
+// POST Remove membership
+router.post('/remove-member', asyncHandler(async (req, res, next) => {
+	await User.findByIdAndUpdate(req.user.id, {member: false});
+
+	res.redirect('/');
+}));
+
 module.exports = router;

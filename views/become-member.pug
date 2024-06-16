@@ -1,0 +1,28 @@
+extends layout 
+
+block content 
+	//- User is not a member and/or entered the wrong password
+	if !user.member && !success
+		p Enter the correct password to #[span.accent-txt become a member]
+
+		form(method='POST')
+			label(for='memberPass') Password: 
+			input#memberPass(type='text' name='pass')
+
+			button.submit(type='submit') Submit 
+
+		if errors 
+			each err in errors 
+				li.err= err.msg 
+
+	//- Successful password attempt
+	else if success 
+		p Congratulations! You are now a #[span.accent-txt member!]
+		a(href='/') Go Home 
+
+	//- User is already a member
+	else if user.member 
+		p Not enjoying your membership?
+
+		form(action='/remove-member' method='POST')
+			button.submit(type='submit') Unsubscribe 
