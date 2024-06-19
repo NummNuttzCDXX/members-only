@@ -175,12 +175,38 @@ button.delete:hover {
 
 form {
   max-width: 50vw;
-  /* min-width: 35vw; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   gap: .5rem;
+}
+
+input {
+	font-size: 1rem;
+	background-color: aliceblue;
+
+	border: 3px solid #3A506B;
+	border-radius: .5rem;
+	appearance: none;
+}
+
+.submit {
+	padding: .3rem;
+
+	color: #232323;
+	background-color: #6FFFE9;
+
+	border: 2px solid #5bc0bec4;
+	border-radius: .5rem;
+
+	align-self: center;
+	transition-duration: .25s;
+}
+.submit:hover {
+	cursor: pointer;
+	transition-duration: .25s;
+	transform: scale(1.1);
 }
 
 /* Invalid form fields */
