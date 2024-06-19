@@ -91,8 +91,32 @@ a {
 }
 
 .msg .author {
+	margin-bottom: 0;
 	font-size: .9em;
 	color: #5bc0bec4;
+}
+
+.delete-form {
+	align-items: end;
+}
+
+button.delete {
+	padding: .3em;
+
+	color: #ae0000;
+	background-color: #5bc0bec4;
+	border: none;
+	border-radius: .5rem;
+
+	transition-duration: .25s;
+}
+button.delete:hover {
+	cursor: pointer;
+	color: aliceblue;
+	background-color: #ae0000;
+
+	transform: scale(1.15);
+	transition-duration: .25s;
 }
 
 .msg-form {

@@ -29,5 +29,9 @@ block content
             p= msg.body 
             if user && user.member
               p.author ~#{msg.author.name}
+              //- Show delete btn if User is Admin
+              if user && user.admin 
+                form.delete-form(action=`/delete-msg/${msg.id}` method='GET')
+                  button.delete(type='submit') Delete
       else 
         p.msg No messages. Post a new message below! 

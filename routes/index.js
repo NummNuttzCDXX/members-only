@@ -274,4 +274,31 @@ router.post('/remove-member', asyncHandler(async (req, res, next) => {
 	res.redirect('/');
 }));
 
+// GET Delete Message page
+router.get('/delete-msg/:id', asyncHandler(async (req, res, next) => {
+	const msg = await Messages.findById(req.params.id)
+		.populate('author');
+
+	res.render('confirm-msg-delete', {
+		title: 'Delete Message',
+		message: msg,
+		user: req.user,
+	});
+}));
+
+// POST Delete Message
+router.post('/delete-msg/:id', asyncHandler(async (req, res, next) => {
+	// Get msg to get the Authors ID
+	const msg = await Messages.findById(req.params.id);
+
+	// Remove msg ID from Author
+	await User.findByIdAndUpdate(msg.author, {
+		$pull: {msgs: msg._id},
+	});
+
+	await msg.deleteOne(); // Delete Message
+
+	res.redirect('/');
+}));
+
 module.exports = router;
