@@ -117,7 +117,14 @@ router.post('/sign-up', [
 		.trim()
 		.isLength({min: 5})
 		.withMessage('Username must have at least 5 characters')
-		.escape(),
+		.escape()
+		// Confirm username is not already in use
+		.custom(async (username) => {
+			// Try to find user with the given username
+			const user = await User.findOne({username: username}).exec();
+			// If user is found, throw error (invalidate field)
+			if (user) throw new Error('Username is already in use');
+		}),
 	body(['pass', 'confPass'])
 		.trim()
 		.isLength({min: 5})
