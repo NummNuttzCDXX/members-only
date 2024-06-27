@@ -57,6 +57,10 @@ router.post('/', [
 		.isLength({min: 1})
 		.withMessage('Fields cannot be blank')
 		.escape(),
+	body('title')
+		.isLength({max: 30})
+		.withMessage('Title exceeds 30 character max')
+		.escape(),
 
 	asyncHandler(async (req, res, next) => {
 		const errors = validationResult(req);
@@ -228,6 +232,9 @@ router.post('/login', [
 
 // GET Become a Member page
 router.get('/become-member', (req, res, next) => {
+	// User must login first
+	if (!req.user) res.redirect('/login');
+
 	res.render('become-member', {
 		title: 'Become a Member',
 		user: req.user,

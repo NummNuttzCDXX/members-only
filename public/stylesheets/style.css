@@ -1,9 +1,9 @@
 :root {
-  font-size: clamp(16px, 2vmin, 20px);
+  font-size: clamp(16px, 2vmin, 40px);
 }
 
 body {
-  padding: 0 50px;
+  padding: 0 3rem;
 	min-height: calc(100vh - 20px);
   font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
 
@@ -32,6 +32,7 @@ h1 a {
 
 nav {
 	display: flex;
+	align-items: center;
 	gap: 1rem;
 }
 
@@ -89,6 +90,12 @@ a {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	gap: 2rem;
+}
+
+/* Date of msg */
+.msg h3 span {
+	font-size: .9em;
 }
 
 .msg .author {
@@ -244,4 +251,58 @@ footer > :nth-child(1n) {
 .gh-icon:hover {
 	transform: rotate(1turn) scale(1.1);
 	transition-duration: .5s;
+}
+
+
+/* Mobile Screens */
+@media screen and (width < 500px) {
+	:root {
+		font-size: 14px;
+	}
+
+	body {
+		padding: 0 1.5rem;
+	}
+
+	header {
+		flex-direction: column;
+	}
+
+	h1 {
+		margin-bottom: 8px;
+	}
+
+	nav {
+		/* max body size (100%) + body padding + body margin */
+		width: calc(100% + calc(21px * 2) + calc(8px * 2));
+		padding: .5rem 0;
+		background-color: #232323;
+		border-radius: .5rem;
+
+		justify-content: space-around;
+
+		box-sizing: border-box;
+	}
+
+	nav a {
+		max-width: 70px;
+	}
+	
+	.msg-form {
+		width: 70vw;
+	}
+
+	/* Send Btn */
+	.msg-form button {
+		top: -11%;
+		left: 105%;
+	}
+
+	.msg-board {
+		width: 80vw;
+	}
+
+	form {
+		max-width: none;
+	}
 }
