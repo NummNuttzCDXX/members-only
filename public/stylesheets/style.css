@@ -46,6 +46,15 @@ nav a:hover {
 	background-color: #3a506bcc;
 }
 
+nav > span {
+	font-size: .88em;
+}
+
+nav > span > span {
+	font-size: .9rem;
+	color: #5BC0BE;
+}
+
 body > p {
 	margin: .5rem 0;
 	font-size: 1.2rem;

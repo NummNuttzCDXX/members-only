@@ -229,6 +229,17 @@ router.post('/login', [
 	},
 ]);
 
+// GET Sign-Out
+router.get('/sign-out', asyncHandler(async (req, res, next) => {
+	// User is not signed in - Redirect to login page
+	if (!req.user) res.redirect('/login');
+
+	req.logOut((err) => {
+		if (err) return next(err);
+		res.redirect('/');
+	});
+}));
+
 
 // GET Become a Member page
 router.get('/become-member', (req, res, next) => {
